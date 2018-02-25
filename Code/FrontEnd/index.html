@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Purchase Insurance Policy</title>
+    <link rel="stylesheet" href="lib/bootstrap-min.css">
+    <link rel="stylesheet" href="app.css">
+    <script src="./node_modules/web3/dist/web3.min.js"></script>
+    <script src="app.js"></script>
+    <script src="email.js"></script>
+</head>
+<body>
+    <div class="container">
+        <form>
+            <div class="form-group">
+              <label for="name">Name</label>
+              <input type="text" class="form-control" id="name" placeholder="Enter name" required>
+            </div>
+            <div class="form-group">
+              <label for="city">City</label>
+              <input type="text" class="form-control" id="city" placeholder="Enter City" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" class="form-control" id="email" placeholder="Enter Email Address" required>
+            </div>
+            <div class="form-group">
+                <label for="day">Day</label>
+                <input type="date" class="form-control" id="day" placeholder="Pick day" required>
+            </div>
+            <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="payment">
+                <label class="form-check-label" for="payment">I agree to pay 0.01 ETH</label>
+              </div>
+            <br>
+            <br>
+            <button type="button" class="btn btn-primary" id="purchasePolicyBtn">Purchase Policy</button>
+            <button type="button" class="btn" id="getAccountPoliciesBtn">Get My Policies</button>
+          </form>
+        
+
+
+    </div>
+
+    
+
+    <script>
+       window.onload = () => {
+            // initialize the app
+            app.init(emailProvider);
+       };
+       
+    </script>
+
+</body>
+</html>

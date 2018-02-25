@@ -1,0 +1,16 @@
+{
+  "name": "proxyserver",
+  "version": "0.1.0",
+  "description": "proxy server for policy front end",
+  "main": "infrastructure/server.js",
+  "scripts": {
+    "start": "node infrastructure/server.js"
+  },
+  "author": "furqan shaikh",
+  "license": "ISC",
+  "dependencies": {
+    "@sendgrid/mail": "^6.2.1",
+    "body-parser": "^1.18.2",
+    "express": "^4.16.2"
+  }
+}

@@ -1,0 +1,8 @@
+# Dependency directories
+ethereum-bridge
+node_modules
+Code/FrontEnd/node_modules/
+Code/Proxy Server/node_modules/
+Code/Smart Contracts/build
+
+
