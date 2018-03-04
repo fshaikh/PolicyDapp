@@ -18,6 +18,12 @@ contract PolicyContract {
         uint amount; // Policy cost
     }
 
+    // Event triggered when user sends a policy purchase request
+    event PolicyPurchase(address from,bool status);
+
+    // Event triggered when user sends a ether for policy purchase
+    event PolicyPurchaseEther(address from);
+
     // Constructor function. Called only once when this contract is deployed to
     // blockchain network
     function PolicyContract() public {
@@ -38,6 +44,9 @@ contract PolicyContract {
 
         // transfer 0.01 Ether from the sender acccount to the contract account
         // Contract account represents the insurance company account
+
+        // Emit the event. Will be saved in transaction's logs when Tx is added in the mined block
+        PolicyPurchase(msg.sender,true);
         return true;
     }
 
@@ -48,7 +57,7 @@ contract PolicyContract {
     // fallback function which will be called whenever ether is sent to the contract address
     function() public payable {
         totalPolicyBought += msg.value;
-
+        PolicyPurchaseEther(msg.sender);
     }  
 
     // function getAccountPolicy(address account) public returns(Policy[]) {

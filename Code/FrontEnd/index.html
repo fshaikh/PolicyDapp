@@ -10,6 +10,7 @@
     <script src="./node_modules/web3/dist/web3.min.js"></script>
     <script src="app.js"></script>
     <script src="email.js"></script>
+    <script src="notification.js"></script>
 </head>
 <body>
     <div class="container">
@@ -49,7 +50,7 @@
     <script>
        window.onload = () => {
             // initialize the app
-            app.init(emailProvider);
+            app.init(emailProvider,NotificationManager);
        };
        
     </script>

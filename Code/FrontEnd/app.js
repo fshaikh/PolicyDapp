@@ -4,19 +4,22 @@ app = (function(){
     var web3;
     var policyContractInstance;
     var emailProvider;
+    var policyPurchaseEvent;
+    var policyPurchaseEtherEvent;
+    var notificationManager;
 
     /**
      * Initializes the app
      */
-    function init(email){
+    function init(email,notificationProvider){
         emailProvider = email;
-        wireEvents();
+        notificationManager = notificationProvider;
 
         if (typeof web3 !== 'undefined') {
             web3 = new Web3(web3.currentProvider);
         } else {
             // set the provider you want from Web3.providers
-            web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:7545"));
+            web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
         }
         
         // set the default account
@@ -27,7 +30,7 @@ app = (function(){
             })
             .then((json)=>{
                 createContractInstance(json);
-                
+                wireEvents();
             })
             .catch((reason)=>{
                 console.log(reason);
@@ -52,6 +55,14 @@ app = (function(){
 
         var getAccountPoliciesBtn = document.querySelector("#getAccountPoliciesBtn");
         getAccountPoliciesBtn.addEventListener("click",getAccountPolicies);
+
+        // Register for policy purchase event from smart contract
+        policyPurchaseEvent = policyContractInstance.PolicyPurchase({from:web3.eth.defaultAccount});
+        policyPurchaseEvent.watch(handlePolicyPurchaseEvent);
+
+        // Register for policy purchase ether event from smart contract
+        policyPurchaseEtherEvent = policyContractInstance.PolicyPurchaseEther({from:web3.eth.defaultAccount});
+        policyPurchaseEtherEvent.watch(handlePolicyPurchaseEtherEvent);
     }
 
     /**
@@ -68,20 +79,12 @@ app = (function(){
         console.log(response);
         // Send email
         var emailBody = getEmailBody(response,inputRequest);
-        var emailResponse = await sendEmail(inputRequest.email,emailBody,"Policy Confirmed");
-        console.log(emailResponse);
-        alert('Policy request succesfully sent. You will receive a confirmatin email shortly with link to transaction');
+        // var emailResponse = await sendEmail(inputRequest.email,emailBody,"Policy Confirmed");
+        // console.log(emailResponse);
+        //alert('Policy request succesfully sent. You will receive a confirmatin email shortly with link to transaction');
     }
 
-    function getAccountPolicies(){
-        if(web3 == null || policyContractInstance == null){
-            return;
-        }
-        alert('called');
-        var response = policyContractInstance.getAccountPolicy(web3.eth.defaultAccount);
-        console.log(response);
-
-    }
+   
 
     /**
      * Constructs a JSON object from the UI elements
@@ -101,6 +104,8 @@ app = (function(){
      * @param {*json} inputRequest 
      */
     function callPurchasePolicyContract(inputRequest){
+
+        
         var transaction =  policyContractInstance.purchasePolicy.sendTransaction(
                                                       inputRequest.name,
                                                       inputRequest.city,
@@ -137,6 +142,34 @@ app = (function(){
             subject:subject
         });
         console.log(response);
+    }
+
+    function handlePolicyPurchaseEvent(error,result){
+        if(error){
+            console.log(error);
+            return;
+        }
+        notificationManager.showNotification({text:'Policy Purchase has been acknowledged.'});
+        //policyPurchaseEvent.stopWatching();
+    }
+
+    function handlePolicyPurchaseEtherEvent(error,result){
+        if(error){
+            console.log(error);
+            return;
+        }
+        notificationManager.showNotification({text:'Policy purchase has been confirmed. 0.01 ETH has been deposited.'});
+        
+    }
+
+     function getAccountPolicies(){
+        if(web3 == null || policyContractInstance == null){
+            return;
+        }
+        alert('called');
+        var response = policyContractInstance.getAccountPolicy(web3.eth.defaultAccount);
+        console.log(response);
+
     }
 
     return{
